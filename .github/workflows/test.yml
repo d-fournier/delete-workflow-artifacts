@@ -21,4 +21,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          milliseconds: 1000
+          workflow-id: test.yml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          echo "toto" > result.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-result
+          path: result.txt
