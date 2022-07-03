@@ -8,6 +8,10 @@ inputs:
   github-token:
     required: true
     description: 'Github token'
+  branch-name:
+    description: 'The branch name'
+    required: false
+    default: ${{ github.head_ref }}
 runs:
   using: 'node16'
   main: 'dist/index.js'

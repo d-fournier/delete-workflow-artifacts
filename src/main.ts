@@ -4,11 +4,11 @@ import * as github from '@actions/github'
 async function run(): Promise<void> {
   const token: string = core.getInput('github-token')
   const workflowId: string = core.getInput('workflow-id')
+  const branch: string = core.getInput('branch-name')
   const api = github.getOctokit(token)
 
   const owner = github.context.repo.owner
   const repo = github.context.repo.repo
-  const branch = github.context.ref
 
   core.info(
     `Listing all workflow runs based on ${workflowId} for ${owner}/${repo} on branch ${branch}, `

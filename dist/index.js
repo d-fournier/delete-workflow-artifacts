@@ -45,10 +45,10 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const token = core.getInput('github-token');
         const workflowId = core.getInput('workflow-id');
+        const branch = core.getInput('branch-name');
         const api = github.getOctokit(token);
         const owner = github.context.repo.owner;
         const repo = github.context.repo.repo;
-        const branch = github.context.ref;
         core.info(`Listing all workflow runs based on ${workflowId} for ${owner}/${repo} on branch ${branch}, `);
         const runs = yield api.rest.actions.listWorkflowRuns({
             owner,
