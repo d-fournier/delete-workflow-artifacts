@@ -1,5 +1,5 @@
-name: 'Delete workflow artifact'
-description: 'Easily share PR medias on a Slack channel'
+name: 'Delete workflow artifacts for branch'
+description: 'Delete all artifacts from a given workflow'
 author: 'Donovan Fournier'
 inputs:
   workflow-id:
