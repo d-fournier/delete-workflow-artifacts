@@ -23,7 +23,7 @@ jobs:
         with:
           workflow-id: test.yml
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - runs: |
+      - run: |
           echo "toto" > result.txt
       - uses: actions/upload-artifact@v3
         with:
