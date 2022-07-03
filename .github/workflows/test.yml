@@ -18,7 +18,14 @@ jobs:
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: ./
         with:
-          milliseconds: 1000
+          workflow-id: test.yml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      - runs: |
+          echo "toto" > result.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-result
+          path: result.txt
