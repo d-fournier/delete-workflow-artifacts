@@ -1,19 +1,46 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as github from '@actions/github'
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+  const token: string = core.getInput('github-token')
+  const workflowId: string = core.getInput('workflow-id')
+  const api = github.getOctokit(token)
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+  const owner = github.context.repo.owner
+  const repo = github.context.repo.repo
+  const branch = github.context.ref
 
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+  core.info(
+    `Listing all workflow runs based on ${workflowId} for ${owner}/${repo} on branch ${branch}, `
+  )
+
+  const runs = await api.rest.actions.listWorkflowRuns({
+    owner,
+    repo,
+    workflow_id: workflowId,
+    branch
+  })
+
+  core.info(`Found ${runs.data.total_count} runs`)
+
+  let deletedArtifact = 0
+
+  for (const workflowRun of runs.data.workflow_runs) {
+    const artifacts = await api.rest.actions.listWorkflowRunArtifacts({
+      owner,
+      repo,
+      run_id: workflowRun.id
+    })
+    for (const artifact of artifacts.data.artifacts) {
+      await api.rest.actions.deleteArtifact({
+        owner,
+        repo,
+        artifact_id: artifact.id
+      })
+      deletedArtifact++
+    }
   }
+  core.info(`Deleted ${deletedArtifact} artifact`)
 }
 
 run()
